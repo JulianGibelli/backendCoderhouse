@@ -1,21 +1,12 @@
 [
   {
-    "code": 1,
-    "title": "mouse",
-    "description": "mouse rosa",
-    "price": 50,
-    "thumbnail": "imagen",
-    "stock": 4,
-    "id": 1
-  },
-  {
     "code": 56,
     "title": "teclado",
     "description": "teclado rosa",
     "price": 70,
     "thumbnail": "imagen",
     "stock": 23,
-    "id": 2
+    "id": 1
   },
   {
     "code": 23,
@@ -24,6 +15,6 @@
     "price": 60,
     "thumbnail": "imagen",
     "stock": 212,
-    "id": 3
+    "id": 2
   }
 ]

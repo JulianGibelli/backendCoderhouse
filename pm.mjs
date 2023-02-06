@@ -12,57 +12,46 @@ export default class ProductManager {
   //asincrona con try/catch
   //previamente deberia de leer el archivo y revisar si el producto a cargar ya existe
   //luego de validar eso deberia de agregar el producto al archivo
+
   async addProduct(code, title, description, price, thumbnail, stock) {
     let product = {
       code: code,
+
       title: title,
+
       description: description,
+
       price: price,
+
       thumbnail: thumbnail,
+
       stock: stock,
     };
-    try {
-      //me fijo si ya existe o no el archivo creado
-      if (fs.existsSync(this.path)) {
-        //ya existe, leo el contenido del archivo
-        const productosLectura = await readFile(this.path);
-        //parsea el contenido para un objeto al cual pueda operar: inicio [] -> [ {}, {}]
-        const productosParseados = JSON.parse(productosLectura);
-        //es una coleccion! array de objetos
-        console.log("soy productos parseados", productosParseados);
-        console.log(
-          "soy longitud de productos parseados",
-          productosParseados.length
-        );
 
-        //completo datos pedidos por metodo en un objeto local
+    try {
+      if (fs.existsSync(this.path)) {
+        const productosLectura = await readFile(this.path, "utf8");
+
+        const productosParseados = JSON.parse(productosLectura);
 
         product.id = productosParseados.length + 1;
-        //busca si el producto con el code creado ya existe
+
         const indexCode = productosParseados.findIndex(
           (item) => item.code === product.code
         );
 
-        console.log("soy index code", indexCode);
-
         if (indexCode === -1) {
-          //si no encontro previo producto lo agrego
-          console.log("mi producto! ->", product);
-          //agrego el nuevo objeto a la lista de productos
           productosParseados.push(product);
-          console.log("productos PARSEADOS! ->", productosParseados);
-          //escribo el nuevo archivo
-          fs.unlinkSync(this.path);
+
           await writeFile(this.path, JSON.stringify(productosParseados));
-          console.log("Producto agregado con exito!");
+
+          console.log("Producto agregado con éxito!");
         } else {
-          //si el elemento a agregar ya existe en el archivo!!
           product.id -= 1;
+
           console.error(`Producto con id:${product.code} ya existente!`);
         }
       } else {
-        //si no existe el archivo escribo
-        //completo datos pedidos por metodo en un objeto local
         console.log("Creado el archivo por primera vez!");
 
         product.id = 1;
@@ -73,7 +62,6 @@ export default class ProductManager {
       console.log(error);
     }
   }
-
   //funcion que devuelve todos los productos ya creados
   async getProducts() {
     try {
