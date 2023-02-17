@@ -1,4 +1,4 @@
-import * as fs from "fs";
+/* import * as fs from "fs";
 import { readFile, writeFile } from "node:fs/promises";
 
 export default class ProductManager {
@@ -102,3 +102,4 @@ export default class ProductManager {
     }
   }
 }
+ */

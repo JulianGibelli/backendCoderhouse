@@ -25,5 +25,16 @@
     "thumbnail": "imagen",
     "stock": 212,
     "id": 3
+  },
+  {
+    "title": "routerpiola",
+    "description": "probando3",
+    "code": 2344565,
+    "price": 54523423,
+    "status": "true",
+    "stock": "234545645",
+    "category": "pc",
+    "thumbnail": [],
+    "id": "3"
   }
 ]
