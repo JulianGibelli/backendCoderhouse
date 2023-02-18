@@ -18,15 +18,6 @@
     "id": 2
   },
   {
-    "code": 23,
-    "title": "auricular",
-    "description": "auricular rosa",
-    "price": 60,
-    "thumbnail": "imagen",
-    "stock": 212,
-    "id": 3
-  },
-  {
     "title": "routerpiola",
     "description": "probando3",
     "code": 2344565,
@@ -38,14 +29,14 @@
     "id": "3"
   },
   {
-    "title": "testing",
-    "description": "testeandodesdepostamn",
-    "code": 666,
-    "price": 444,
-    "status": "true",
-    "stock": "34",
-    "category": "utiles",
+    "title": "teclado",
+    "description": "tecladoRemoto",
+    "code": 9,
+    "price": 999,
+    "status": "false",
+    "stock": "34234",
+    "category": "perifericos",
     "thumbnail": [],
-    "id": "519d5af6-f643-4cc2-996f-e3003b05c4d5"
+    "id": "2efd55fd-6b08-4e93-86b7-88945f41967b"
   }
 ]

@@ -70,7 +70,7 @@ routerCart.get("/:cid", (req, res) => {
     });
   } else {
     //enviar un archivo not found
-    res.status(404).send(`<h1>Archivo Productos no cargados!</h1>`);
+    res.status(404).send(`<h1>Archivo Cart no cargado!</h1>`);
   }
 });
 

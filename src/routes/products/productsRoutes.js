@@ -129,7 +129,7 @@ routerProductos.post("/", (req, res) => {
 //ENDPOINT PARA ACTUALIZAR UN PRODUCTO DADO UN ID Y DETALLES A ACTUALIZAR
 routerProductos.put("/:pid", (req, res) => {
   //tomo el id del elemento a actualizar
-  let idAModificar = req.params.pid;
+  let idAModificar = req.params.pid.toString();
 
   //hago destructuring de todo lo que se que puede llegar a existir en el body enviado
   let {
@@ -143,18 +143,6 @@ routerProductos.put("/:pid", (req, res) => {
     thumbnail,
   } = req.body;
 
-  //lo agrego a un nuevo objeto
-  const objAgregar = {
-    title: title || "",
-    description: description || "",
-    code: parseInt(code) || "999",
-    price: parseInt(price) || "999",
-    status: status,
-    stock: parseInt(stock)  || "999",
-    category: category || "asd",
-    thumbnail: thumbnail || [],
-    id: idAModificar,
-  };
 
   //valido si el archivo existe
   if (fs.existsSync(archivoURL)) {
@@ -165,7 +153,7 @@ routerProductos.put("/:pid", (req, res) => {
       let indiceProductoAModificar = arrayParseado.findIndex(
         (pr) => pr.id == idAModificar
       );
-
+      console.log("indiceProductoAModificar", indiceProductoAModificar)
       //si no encontro producto por ese indice
       if (indiceProductoAModificar == -1) {
         res.setHeader("Content-Type", "text/plain");
@@ -174,30 +162,29 @@ routerProductos.put("/:pid", (req, res) => {
         });
       }
 
-      //TODO: VER COMO SABER QUE CAMPOS SE MODIFICAN Y CUALES NO!!
-      //SEGUIR CON ESTO!!
       title && (arrayParseado[indiceProductoAModificar]["title"] = title);
-      arrayParseado["idAModificar"] = objAgregar;
+      description && (arrayParseado[indiceProductoAModificar]["description"] = description);
+      code && (arrayParseado[indiceProductoAModificar]["code"] = code);
+      price && (arrayParseado[indiceProductoAModificar]["price"] = price);
+      status && (arrayParseado[indiceProductoAModificar]["status"] = status);
+      stock && (arrayParseado[indiceProductoAModificar]["stock"] = stock);
+      category && (arrayParseado[indiceProductoAModificar]["category"] = category);
+      thumbnail && (arrayParseado[indiceProductoAModificar]["thumbnail"] = thumbnail);
 
       //escribo el archivo parseado
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado)).then(
-        (respuesta) => {
-          res.setHeader("Content-Type", "text/plain");
-          res.status(201).json({
-            message: respuesta,
-          });
-        }
-      );
+      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado))
 
       res.setHeader("Content-Type", "text/plain");
       res.status(201).json({
-        message: `Agregado producto con id ${objAgregar.id}`,
+        message: `Actualizado producto con id ${idAModificar}`,
       });
     });
+  }else{
+    res.status(404).send(`<h1>Archivo Productos no cargados!</h1>`);
   }
 });
 
-//ENDPOINT PARA ELIMINAR UN PRODUCTO DADO UN ID
+//ENDPOINT PARA ELIMINAR UN PRODUCTO DADO UN ID !FUNCIONANDO!
 routerProductos.delete("/:pid", (req, res) => {
   //tomo el id del elemento a actualizar
   let idAModificar = req.params.pid;
