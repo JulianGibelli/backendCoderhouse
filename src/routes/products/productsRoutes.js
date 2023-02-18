@@ -116,7 +116,7 @@ routerProductos.post("/", (req, res) => {
           .send(`El item que intenta agregar ya existe en el archivo`);
       }
 
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado))
+      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado,null,5))
 
       res.setHeader("Content-Type", "text/plain");
       res.status(201).json({
@@ -172,7 +172,7 @@ routerProductos.put("/:pid", (req, res) => {
       thumbnail && (arrayParseado[indiceProductoAModificar]["thumbnail"] = thumbnail);
 
       //escribo el archivo parseado
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado))
+      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado,null,5))
 
       res.setHeader("Content-Type", "text/plain");
       res.status(201).json({
@@ -210,7 +210,7 @@ routerProductos.delete("/:pid", (req, res) => {
       arrayParseado.splice(indiceProductoAModificar, 1);
 
       //escribo el archivo parseado
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado)).then(
+      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado,null,5)).then(
         (respuesta) => {
           res.setHeader("Content-Type", "text/plain");
           res.status(201).json({

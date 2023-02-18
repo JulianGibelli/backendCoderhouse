@@ -24,7 +24,7 @@ routerCart.post("/", (req, res) => {
       arrayParseado.push(carritoAgregar);
 
       //escribo el nuevo contenido en el path del archivo
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado));
+      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado,null,5));
 
       //respondo informando que se agrego el nuevo carrito al archivo
       res.setHeader("Content-Type", "text/plain");
@@ -38,7 +38,7 @@ routerCart.post("/", (req, res) => {
     let arrayParseado = [];
     arrayParseado.push(carritoAgregar);
     //escribo un nuevo archivo con la nueva collection
-    escrituraArchivo(archivoURL, JSON.stringify(arrayParseado));
+    escrituraArchivo(archivoURL, JSON.stringify(arrayParseado,null,5));
     //informo de la creacion del archivo con el carrito nuevo
     res.setHeader("Content-Type", "text/plain");
     res.status(201).json({
@@ -129,7 +129,7 @@ routerCart.post("/:cid/product/:pid", (req, res) => {
 
       arrayParseado[carritoFiltradoIndex] = carritoFiltrado;
 
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado));
+      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado,null,5));
 
       res.setHeader("Content-Type", "text/plain");
       res.status(201).json({
