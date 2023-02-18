@@ -4,28 +4,45 @@ import { lecturaArchivo, escrituraArchivo } from "../../app.js";
 import { v4 as uuidv4 } from "uuid";
 
 const routerCart = Router();
-const archivoURL =
-  "/home/shibe/Escritorio/webtest/backend/desafioEnt4/backendCoderhouse/src/cart.json";
+const archivoURL = "./src/cart.json";
 
-//ENDPOINT PARA AGREGAR UN PRODUCTO
+//ENDPOINT PARA AGREGAR UN CARRITO
 routerCart.post("/", (req, res) => {
-  const objAgregar = {
+  //genera un carrito con id autogenerado y array vacio
+  const carritoAgregar = {
     id: uuidv4(),
     products: [],
   };
 
+  //si existe el archivo en la url
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
+      //parseo la collection y se convierte en arrayparseado
       let arrayParseado = JSON.parse(respuesta);
 
-      arrayParseado.push(objAgregar);
+      //a esa coleccion le pusheo un nuevo objeto -> el carrito nuevo
+      arrayParseado.push(carritoAgregar);
 
+      //escribo el nuevo contenido en el path del archivo
       escrituraArchivo(archivoURL, JSON.stringify(arrayParseado));
 
+      //respondo informando que se agrego el nuevo carrito al archivo
       res.setHeader("Content-Type", "text/plain");
       res.status(201).json({
-        message: `Se creo el carrito con id: ${objAgregar.id}`,
+        message: `Se creo el carrito con id: ${carritoAgregar.id}`,
       });
+    });
+
+    //si no existe el archivo en la url
+  } else {
+    let arrayParseado = [];
+    arrayParseado.push(carritoAgregar);
+    //escribo un nuevo archivo con la nueva collection
+    escrituraArchivo(archivoURL, JSON.stringify(arrayParseado));
+    //informo de la creacion del archivo con el carrito nuevo
+    res.setHeader("Content-Type", "text/plain");
+    res.status(201).json({
+      message: `Se creo el archivo y se agrego el carrito con id: ${carritoAgregar.id}`,
     });
   }
 });
@@ -38,12 +55,13 @@ routerCart.get("/:cid", (req, res) => {
     lecturaArchivo(archivoURL).then((respuesta) => {
       let arrayParseado = JSON.parse(respuesta);
 
+      //tomo el carrito filtrado a partir del ID enviado por parametro
       const carritoFiltrado = arrayParseado.find((c) => {
         return c.id == cid;
       });
-
+      //si existe el carrito
       if (carritoFiltrado) {
-        res.status(200).JSON({ items: carritoFiltrado.products });
+        res.status(200).json({ items: carritoFiltrado.products });
       } else {
         res
           .status(404)
@@ -58,37 +76,50 @@ routerCart.get("/:cid", (req, res) => {
 
 //ENDPOINT PARA AGREGAR UN PRODUCTO AL CARRITO ESPECIFICADO POR ID
 routerCart.post("/:cid/product/:pid", (req, res) => {
+  //recibo por params el id del product y del cart
   let carritoID = req.params.cid;
   let productID = req.params.pid;
-
+  //por body me envian la cantidad a agregar del product
   let { quantity } = req.body;
 
+  //defino un nuevo objeto a agregar al array de productos del cart
   const objAgregar = {
     id: productID,
-    quantity: quantity,
+    quantity: parseInt(quantity),
   };
 
+  //si existe el archivo en la url
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
+      //parseo la collection y se convierte en arrayparseado
       let arrayParseado = JSON.parse(respuesta);
 
-      const carritoFiltrado = arrayParseado.find((c) => {
-        return c.id == carritoID;
-      });
+      //busco dentro de la collection ese carrito filtrado
       const carritoFiltradoIndex = arrayParseado.findIndex((c) => {
         return c.id == carritoID;
       });
+
+      //busco el carrito que tenga el mismo carritoID del parametro
+      const carritoFiltrado = arrayParseado.find((c) => {
+        return c.id == carritoID;
+      });
+
       //si encuentro el carrito con id parametro
       if (carritoFiltrado) {
+        //busco el producto que tenga el mismo productID del parametro
         let productoFiltrado = carritoFiltrado["products"].findIndex(
           (p) => p.id == productID
         );
         //si no existe producto previamente en el carrito
         if (productoFiltrado == -1) {
+          //al carrito filtrado en su array de product le pusheo el objeto a agregar
           carritoFiltrado["products"].push(objAgregar);
         } else {
-          carritoFiltrado["products"]["productoFiltrado"]["quantity"] +=
-            objAgregar.quantity;
+          //si existe el producto previamente, me posiciono y en su prop cantidad sumo
+          carritoFiltrado["products"][productoFiltrado]["quantity"] =
+            parseInt(
+              carritoFiltrado["products"][productoFiltrado]["quantity"]
+            ) + parseInt(objAgregar.quantity);
         }
       } else {
         return res
@@ -96,8 +127,7 @@ routerCart.post("/:cid/product/:pid", (req, res) => {
           .send(`<h2>Su carrito con id ${carritoID} no se ha encontrado</h2>`);
       }
 
-      
-      arrayParseado[carritoFiltradoIndex] = carritoFiltrado
+      arrayParseado[carritoFiltradoIndex] = carritoFiltrado;
 
       escrituraArchivo(archivoURL, JSON.stringify(arrayParseado));
 

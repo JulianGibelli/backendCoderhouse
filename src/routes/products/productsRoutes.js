@@ -4,10 +4,9 @@ import { lecturaArchivo, escrituraArchivo } from "../../app.js";
 import { v4 as uuidv4 } from "uuid";
 
 const routerProductos = Router();
-const archivoURL =
-  "/home/shibe/Escritorio/webtest/backend/desafioEnt4/backendCoderhouse/src/productos.json";
+const archivoURL = "./src/productos.json";
 
-//ENDPOINT PARA OBTENER TODOS LOS PRODUCTOS
+//ENDPOINT PARA OBTENER TODOS LOS PRODUCTOS !FUNCIONANDO!
 routerProductos.get("/", (req, res) => {
   //si tiene parametro query limit limito a esa cantidad de productos, sino muestros todos
 
@@ -31,7 +30,7 @@ routerProductos.get("/", (req, res) => {
   }
 });
 
-//ENDPOINT PARA OBTENER PRODUCTO POR ID
+//ENDPOINT PARA OBTENER PRODUCTO POR ID !FUNCIONANDO!
 routerProductos.get("/:pos", (req, res) => {
   let pos = req.params.pos;
   //si existe el archivo en la url
@@ -57,10 +56,10 @@ routerProductos.get("/:pos", (req, res) => {
   }
 });
 
-//ENDPOINT PARA AGREGAR UN PRODUCTO
+//ENDPOINT PARA AGREGAR UN PRODUCTO !FUNCIONADO!
 routerProductos.post("/", (req, res) => {
-  console.log(req.body);
-  console.log(typeof req.body);
+  let objAgregar = "";
+
   let {
     title,
     description,
@@ -72,32 +71,52 @@ routerProductos.post("/", (req, res) => {
     thumbnail,
   } = req.body;
 
-  const objAgregar = {
-    title: title,
-    description: description,
-    code: parseInt(code),
-    price: parseInt(price),
-    status: status,
-    stock: stock,
-    category: category,
-    thumbnail: thumbnail || [],
-    id: uuidv4(),
-  };
+  //valido que los campos obtenidos desde el body existan
+  if (
+    !title ||
+    !description ||
+    !code ||
+    !stock ||
+    !category ||
+    !price ||
+    !status
+  ) {
+    return res.status(400).send(`<h2>Los campos no pueden estar vacios</h2>`);
+  } else {
+    objAgregar = {
+      title: title,
+      description: description,
+      code: parseInt(code),
+      price: parseInt(price),
+      status: status,
+      stock: stock,
+      category: category,
+      thumbnail: thumbnail || [],
+      id: uuidv4(),
+    };
+  }
 
+  //valido si el archivo existe
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
       let arrayParseado = JSON.parse(respuesta);
 
-      arrayParseado.push(objAgregar);
-
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado)).then(
-        (respuesta) => {
-          res.setHeader("Content-Type", "text/plain");
-          res.status(201).json({
-            message: respuesta,
-          });
-        }
+      //tengo que corroborar que en el archivo no exista el producto con code a agregar!
+      let indiceProducto = arrayParseado.findIndex(
+        (p) => p.code == objAgregar.code
       );
+
+      //si no existe el producto en el archivo
+      if (indiceProducto == -1) {
+        arrayParseado.push(objAgregar);
+      } else {
+        res.setHeader("Content-Type", "text/plain");
+        return res
+          .status(404)
+          .send(`El item que intenta agregar ya existe en el archivo`);
+      }
+
+      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado))
 
       res.setHeader("Content-Type", "text/plain");
       res.status(201).json({
@@ -131,12 +150,13 @@ routerProductos.put("/:pid", (req, res) => {
     code: parseInt(code) || "999",
     price: parseInt(price) || "999",
     status: status,
-    stock: stock || "999",
+    stock: parseInt(stock)  || "999",
     category: category || "asd",
     thumbnail: thumbnail || [],
     id: idAModificar,
   };
 
+  //valido si el archivo existe
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
       let arrayParseado = JSON.parse(respuesta);
@@ -154,8 +174,10 @@ routerProductos.put("/:pid", (req, res) => {
         });
       }
 
-      //si encuentro ese id modifico el elemento en esa posicion con el nuevo objeto a agregar
-      arrayParseado[idAModificar] = objAgregar;
+      //TODO: VER COMO SABER QUE CAMPOS SE MODIFICAN Y CUALES NO!!
+      //SEGUIR CON ESTO!!
+      title && (arrayParseado[indiceProductoAModificar]["title"] = title);
+      arrayParseado["idAModificar"] = objAgregar;
 
       //escribo el archivo parseado
       escrituraArchivo(archivoURL, JSON.stringify(arrayParseado)).then(
@@ -178,9 +200,7 @@ routerProductos.put("/:pid", (req, res) => {
 //ENDPOINT PARA ELIMINAR UN PRODUCTO DADO UN ID
 routerProductos.delete("/:pid", (req, res) => {
   //tomo el id del elemento a actualizar
-  let idAModificar = req.params.pid; 
-
- 
+  let idAModificar = req.params.pid;
 
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
@@ -200,7 +220,7 @@ routerProductos.delete("/:pid", (req, res) => {
       }
 
       //si encuentro ese id modifico el elemento en esa posicion con el nuevo objeto a agregar
-      arrayParseado.splice(indiceProductoAModificar,1)
+      arrayParseado.splice(indiceProductoAModificar, 1);
 
       //escribo el archivo parseado
       escrituraArchivo(archivoURL, JSON.stringify(arrayParseado)).then(

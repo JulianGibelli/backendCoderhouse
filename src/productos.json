@@ -36,5 +36,16 @@
     "category": "pc",
     "thumbnail": [],
     "id": "3"
+  },
+  {
+    "title": "testing",
+    "description": "testeandodesdepostamn",
+    "code": 666,
+    "price": 444,
+    "status": "true",
+    "stock": "34",
+    "category": "utiles",
+    "thumbnail": [],
+    "id": "519d5af6-f643-4cc2-996f-e3003b05c4d5"
   }
 ]
