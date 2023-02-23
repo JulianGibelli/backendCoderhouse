@@ -13,7 +13,7 @@ routerProductos.get("/", (req, res) => {
   //si existe el archivo en la url
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
       //si tengo query limit y no supera el maximo de elementos del array
       if (req.query.limit) {
         const arrayLimitado = arrayParseado.slice(0, req.query.limit);
@@ -21,7 +21,6 @@ routerProductos.get("/", (req, res) => {
         res.status(200).send(arrayLimitado);
       } else {
         res.status(200).send(arrayParseado);
-        // res.send(JSON.parse(respuesta));
       }
     });
   } else {
@@ -36,7 +35,7 @@ routerProductos.get("/:pos", (req, res) => {
   //si existe el archivo en la url
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
 
       const productoFiltrado = arrayParseado.find((i) => {
         return i.id == pos;
@@ -99,7 +98,7 @@ routerProductos.post("/", (req, res) => {
   //valido si el archivo existe
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
 
       //tengo que corroborar que en el archivo no exista el producto con code a agregar!
       let indiceProducto = arrayParseado.findIndex(
@@ -147,7 +146,7 @@ routerProductos.put("/:pid", (req, res) => {
   //valido si el archivo existe
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
 
       //busco la posicion del elemento que tiene ese id a modificar
       let indiceProductoAModificar = arrayParseado.findIndex(
@@ -191,7 +190,7 @@ routerProductos.delete("/:pid", (req, res) => {
 
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
 
       //busco la posicion del elemento que tiene ese id a modificar
       let indiceProductoAModificar = arrayParseado.findIndex(

@@ -1,10 +1,19 @@
 [
-  { "id": "7fbec4a4-1623-4645-bd95-c5612446ea8d", "products": [] },
+  {
+    "id": "7fbec4a4-1623-4645-bd95-c5612446ea8d",
+    "products": []
+  },
   {
     "id": "398a8229-3a57-4ad8-8404-930dc5c78d24",
     "products": [
-      { "id": "2", "quantity": 8 },
-      { "id": "5", "quantity": "10" }
+      {
+        "id": "2",
+        "quantity": 10
+      },
+      {
+        "id": "5",
+        "quantity": "10"
+      }
     ]
   }
 ]

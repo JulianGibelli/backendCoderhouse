@@ -18,7 +18,7 @@ routerCart.post("/", (req, res) => {
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
       //parseo la collection y se convierte en arrayparseado
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
 
       //a esa coleccion le pusheo un nuevo objeto -> el carrito nuevo
       arrayParseado.push(carritoAgregar);
@@ -53,7 +53,7 @@ routerCart.get("/:cid", (req, res) => {
   //si existe el archivo en la url
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
 
       //tomo el carrito filtrado a partir del ID enviado por parametro
       const carritoFiltrado = arrayParseado.find((c) => {
@@ -75,12 +75,22 @@ routerCart.get("/:cid", (req, res) => {
 });
 
 //ENDPOINT PARA AGREGAR UN PRODUCTO AL CARRITO ESPECIFICADO POR ID
-routerCart.post("/:cid/product/:pid", (req, res) => {
+routerCart.post("/:cid/product/:pid", async(req, res) => {
   //recibo por params el id del product y del cart
   let carritoID = req.params.cid;
   let productID = req.params.pid;
   //por body me envian la cantidad a agregar del product
   let { quantity } = req.body;
+
+  let todosLosProductos=await lecturaArchivo('./src/productos.json');
+  
+    let indiceProducto=todosLosProductos.findIndex(p=>p.id==productID);
+    
+    if (indiceProducto==-1){
+      return res.status(404).json({
+        message:"Producto Inexistente en base de datos...!!!"
+      })
+    }
 
   //defino un nuevo objeto a agregar al array de productos del cart
   const objAgregar = {
@@ -92,7 +102,7 @@ routerCart.post("/:cid/product/:pid", (req, res) => {
   if (fs.existsSync(archivoURL)) {
     lecturaArchivo(archivoURL).then((respuesta) => {
       //parseo la collection y se convierte en arrayparseado
-      let arrayParseado = JSON.parse(respuesta);
+      let arrayParseado = respuesta;
 
       //busco dentro de la collection ese carrito filtrado
       const carritoFiltradoIndex = arrayParseado.findIndex((c) => {
