@@ -1,0 +1,21 @@
+<h1>Lista de productos cargados via websocket!!</h1>
+<ul id="productList">
+  {{#each arayprueba}}
+    <li>id:{{this.id}} - quantity: {{this.quantity}}</li>
+  {{/each}}
+</ul>
+
+<h2>Eliminar producto</h2>
+<form id="deleteProductForm" action="">
+  <input type="text" name="idInput" placeholder="Ingrese ID" />
+  <br />
+  <input type="submit" value="Enviar" />
+</form>
+<h2>Crear producto</h2>
+<form id="addProductForm" action="">
+  <input type="text" placeholder="id" />
+  <br />  
+  <input type="number" placeholder="quantity" />
+  <br />
+  <input type="submit" value="Enviar" />
+</form>
