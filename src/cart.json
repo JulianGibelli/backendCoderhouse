@@ -1,7 +1,14 @@
 [
   {
     "id": "7fbec4a4-1623-4645-bd95-c5612446ea8d",
-    "products": []
+    "products": [{
+      "id": "90",
+      "quantity": 14
+    },
+    {
+      "id": "87",
+      "quantity": "345"
+    }]
   },
   {
     "id": "398a8229-3a57-4ad8-8404-930dc5c78d24",
