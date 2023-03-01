@@ -9,15 +9,6 @@
     "id": 1
   },
   {
-    "code": 56,
-    "title": "teclado",
-    "description": "teclado rosa",
-    "price": 70,
-    "thumbnail": "imagen",
-    "stock": 23,
-    "id": 2
-  },
-  {
     "title": "routerpiola",
     "description": "probando3",
     "code": 2344565,

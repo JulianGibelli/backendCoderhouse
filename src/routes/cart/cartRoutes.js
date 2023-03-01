@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as fs from "fs";
-import { lecturaArchivo, escrituraArchivo } from "../../app.js";
+import { lecturaArchivo, escrituraArchivo } from "../../utils/utils.js";
 import { v4 as uuidv4 } from "uuid";
 
 const routerCart = Router();

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as fs from "fs";
-import { lecturaArchivo, escrituraArchivo } from "../../app.js";
+import { lecturaArchivo, escrituraArchivo } from "../../utils/utils.js";
 import { serverSocket } from "../../app.js";
 
 const routervistas = Router();
