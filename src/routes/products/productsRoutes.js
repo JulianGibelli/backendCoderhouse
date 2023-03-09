@@ -2,11 +2,13 @@ import { Router } from "express";
 import * as fs from "fs";
 import { lecturaArchivo, escrituraArchivo } from "../../utils/utils.js";
 import { v4 as uuidv4 } from "uuid";
+import { Product } from "../../dao/productsControlador.js";
 
 const routerProductos = Router();
+const producto = new Product
 const archivoURL = "./src/productos.json";
 
-//ENDPOINT PARA OBTENER TODOS LOS PRODUCTOS !FUNCIONANDO!
+/* //FS ENDPOINT PARA OBTENER TODOS LOS PRODUCTOS !FUNCIONANDO! 
 routerProductos.get("/", (req, res) => {
   //si tiene parametro query limit limito a esa cantidad de productos, sino muestros todos
 
@@ -27,10 +29,12 @@ routerProductos.get("/", (req, res) => {
     //enviar un archivo not found
     res.status(404).send(`<h1>Archivo Productos no cargados!</h1>`);
   }
-});
+}); */
+//DB ENDPOINT PARA OBTENER TODOS LOS PRODUCTOS
+routerProductos.get("/",producto.getProducts)
 
 //ENDPOINT PARA OBTENER PRODUCTO POR ID !FUNCIONANDO!
-routerProductos.get("/:pos", (req, res) => {
+/* routerProductos.get("/:pos", (req, res) => {
   let pos = req.params.pos;
   //si existe el archivo en la url
   if (fs.existsSync(archivoURL)) {
@@ -54,79 +58,15 @@ routerProductos.get("/:pos", (req, res) => {
     res.status(404).send(`<h1>Archivo Productos no cargados!</h1>`);
   }
 });
+ */
+//DB ENDPOINT PARA OBTENER PRODUCTO POR ID
+routerProductos.get("/:pid",producto.getProduct)
 
-//ENDPOINT PARA AGREGAR UN PRODUCTO !FUNCIONADO!
-routerProductos.post("/", (req, res) => {
-  let objAgregar = "";
-
-  let {
-    title,
-    description,
-    code,
-    price,
-    status = true,
-    stock,
-    category,
-    thumbnail,
-  } = req.body;
-
-  //valido que los campos obtenidos desde el body existan
-  if (
-    !title ||
-    !description ||
-    !code ||
-    !stock ||
-    !category ||
-    !price ||
-    !status
-  ) {
-    return res.status(400).send(`<h2>Los campos no pueden estar vacios</h2>`);
-  } else {
-    objAgregar = {
-      title: title,
-      description: description,
-      code: parseInt(code),
-      price: parseInt(price),
-      status: status,
-      stock: stock,
-      category: category,
-      thumbnail: thumbnail || [],
-      id: uuidv4(),
-    };
-  }
-
-  //valido si el archivo existe
-  if (fs.existsSync(archivoURL)) {
-    lecturaArchivo(archivoURL).then((respuesta) => {
-      let arrayParseado = respuesta;
-
-      //tengo que corroborar que en el archivo no exista el producto con code a agregar!
-      let indiceProducto = arrayParseado.findIndex(
-        (p) => p.code == objAgregar.code
-      );
-
-      //si no existe el producto en el archivo
-      if (indiceProducto == -1) {
-        arrayParseado.push(objAgregar);
-      } else {
-        res.setHeader("Content-Type", "text/plain");
-        return res
-          .status(404)
-          .send(`El item que intenta agregar ya existe en el archivo`);
-      }
-
-      escrituraArchivo(archivoURL, JSON.stringify(arrayParseado,null,5))
-
-      res.setHeader("Content-Type", "text/plain");
-      res.status(201).json({
-        message: `Agregado producto con id ${objAgregar.id}`,
-      });
-    });
-  }
-});
+//DB ENDPOINT PARA AGREGAR UN PRODUCTO !Funcionando
+routerProductos.post("/", producto.addProduct);
 
 //ENDPOINT PARA ACTUALIZAR UN PRODUCTO DADO UN ID Y DETALLES A ACTUALIZAR
-routerProductos.put("/:pid", (req, res) => {
+/* routerProductos.put("/:pid", (req, res) => {
   //tomo el id del elemento a actualizar
   let idAModificar = req.params.pid.toString();
 
@@ -181,7 +121,11 @@ routerProductos.put("/:pid", (req, res) => {
   }else{
     res.status(404).send(`<h1>Archivo Productos no cargados!</h1>`);
   }
-});
+}); */
+//DB ENDPOINT PARA ACTUALIZAR UN PRODUCTO DADO UN ID Y DETALLES
+routerProductos.put("/:pid",producto.modifyProduct)
+
+
 
 //ENDPOINT PARA ELIMINAR UN PRODUCTO DADO UN ID !FUNCIONANDO!
 routerProductos.delete("/:pid", (req, res) => {

@@ -1,5 +1,5 @@
 import express from "express";
-
+import { mongoose } from "mongoose";
 import { routerCart } from "./routes/cart/cartRoutes.js";
 import { routerProductos } from "./routes/products/productsRoutes.js";
 import { routervistas } from "./routes/viewRoutes/vistasRoutes.js";
@@ -61,3 +61,17 @@ serverSocket.on("connection", async (socket) => {
     socket.emit("addProductRes", response,arayprueba);
   }); 
 });
+
+const conectar=async()=>{
+  try {      
+      // acceso a servidor local:
+      // await mongoose.connect('mongodb://127.0.0.1:27017/pruebas_mongo')
+
+      await mongoose.connect('mongodb+srv://juligibelli:123Ar456.@cluster0.ysg0sy4.mongodb.net/?retryWrites=true&w=majority&dbName=ecommerce')
+      console.log(`Conexión a DB establecida`)
+  } catch (err) {
+      console.log(`Error al conectarse con el servidor de BD: ${err}`)
+  }
+}
+
+conectar();
