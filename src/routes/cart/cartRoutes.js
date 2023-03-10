@@ -160,6 +160,7 @@ routerCart.post("/", cart.addCart);
 //DB ENDPOINT PARA AGREGAR UN PRODUCTO AL CARRITO ESPECIFICADO POR ID
 routerCart.post("/:cid/product/:pid",cart.addProduct)
 
-
+//DB ENDOPOINT PARA ELIMINAR UN CARRITO ESPECIFICADO POR ID
+routerCart.delete("/:cid",cart.deleteCart)
 
 export { routerCart };

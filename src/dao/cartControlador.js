@@ -1,4 +1,5 @@
 import { cartsModelo } from "./models/carts.models.js";
+import { v4 as uuidv4 } from "uuid";
 
 export class Cart {
   constructor() {}
@@ -18,9 +19,9 @@ export class Cart {
     let carrito;
     let producto;
     let idCarrito = req.params.cid;
-    console.log(idCarrito);
+    console.log("id del carro", idCarrito);
     let idProducto = req.params.pid;
-    console.log(idProducto);
+    console.log("id del producto", idProducto);
     let { quantity } = req.body;
 
     if (!quantity) {
@@ -39,14 +40,45 @@ export class Cart {
         mensaje: `Error: no se encontro el carrito con ID: ${idCarrito} en la DB`,
       });
     }
+    
+    //Busco el carrito por id y que tiene el producto a modificar por su id
+    producto = await cartsModelo.find({
+      $and: [{ _id: { $eq: `${idCarrito}` } }, { 'products["id"]': { $eq: `${idProducto}` } }],
+    });
 
-    //intenta buscar el producto con id dado en el carrito con id dado
-    try {
-      producto = await cartsModelo.find({
-        $and: [{ _id: { $eq: `${idCarrito}` } }, { "products.id": { $eq: `${idProducto}` } }],
-      });
-    } catch (error) {
-        console.log("encontre el carrito pero no el product id")
+    //Estoy seguro que tengo el carrito pero nose si tiene el producto a modificar/agrgar
+    console.log(producto);
+    if (producto.length !== 0) {
+        producto = await cartsModelo.updateOne(
+          {
+            $and: [
+              { _id: { $eq: `${idCarrito}` } },
+              { 'products["id"]': { $eq: `${idProducto}` } },
+            ],
+          },
+          { $inc: { "products.$.quantity": parseInt(quantity) } }
+        );
+    } else {
+        //si no tengo productos cargados en el carrito actual, es decir, cargaria mi primer elemento!
+        producto = await cartsModelo.updateOne(
+          { _id: { $eq: `${idCarrito}` } },
+          { $set: { products: { id: idProducto, quantity: parseInt(quantity) } } }
+        );
+        res.setHeader("Content-Type", "application/json");
+        res.status(201).json({
+          producto,
+        });
     }
+  }
+
+  async deleteCart(req,res){
+      let cartId = req.params.cid;
+
+      let cartsModificado = await cartsModelo.deleteOne({ _id: cartId });
+
+      res.setHeader("Content-Type", "application/json");
+      res.status(200).json({
+        cartsModificado,
+      });
   }
 }
