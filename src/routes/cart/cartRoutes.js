@@ -2,12 +2,14 @@ import { Router } from "express";
 import * as fs from "fs";
 import { lecturaArchivo, escrituraArchivo } from "../../utils/utils.js";
 import { v4 as uuidv4 } from "uuid";
+import { Cart } from "../../dao/cartControlador.js";
 
+const cart = new Cart()
 const routerCart = Router();
 const archivoURL = "./src/cart.json";
 
 //ENDPOINT PARA AGREGAR UN CARRITO
-routerCart.post("/", (req, res) => {
+/* routerCart.post("/", (req, res) => {
   //genera un carrito con id autogenerado y array vacio
   const carritoAgregar = {
     id: uuidv4(),
@@ -45,10 +47,14 @@ routerCart.post("/", (req, res) => {
       message: `Se creo el archivo y se agrego el carrito con id: ${carritoAgregar.id}`,
     });
   }
-});
+}); */
+//DB ENDPOINT PARA AGREGAR UN NUEVO CARRITO A LA COLECCION
+routerCart.post("/", cart.addCart);
+
+
 
 //ENDPOINT PARA OBTENER PRODUCTOS POR ID DEL CARRITO
-routerCart.get("/:cid", (req, res) => {
+/* routerCart.get("/:cid", (req, res) => {
   let cid = req.params.cid;
   //si existe el archivo en la url
   if (fs.existsSync(archivoURL)) {
@@ -72,10 +78,13 @@ routerCart.get("/:cid", (req, res) => {
     //enviar un archivo not found
     res.status(404).send(`<h1>Archivo Cart no cargado!</h1>`);
   }
-});
+}); */
+//DB ENDPOINT PARA OBTENER PRODUCTOS ṔOR ID DEL CARRITO
+
+
 
 //ENDPOINT PARA AGREGAR UN PRODUCTO AL CARRITO ESPECIFICADO POR ID
-routerCart.post("/:cid/product/:pid", async(req, res) => {
+/* routerCart.post("/:cid/product/:pid", async(req, res) => {
   //recibo por params el id del product y del cart
   let carritoID = req.params.cid;
   let productID = req.params.pid;
@@ -147,5 +156,10 @@ routerCart.post("/:cid/product/:pid", async(req, res) => {
       });
     });
   }
-});
+}); */
+//DB ENDPOINT PARA AGREGAR UN PRODUCTO AL CARRITO ESPECIFICADO POR ID
+routerCart.post("/:cid/product/:pid",cart.addProduct)
+
+
+
 export { routerCart };
