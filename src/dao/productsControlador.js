@@ -86,10 +86,10 @@ export class Product {
     });
   }
 
+  //modifico un producto filtrado por _id
   async modifyProduct(req,res){
     //tomo el id del producto
     let idParam = req.params.pid;
-    //hago destructuring de todo lo que se que puede llegar a existir en el body enviado
     let producto;
     try {
         //voy a buscarlo a mi DB por ese id, si no lo encuentro arroja error
@@ -100,8 +100,8 @@ export class Product {
             mensaje: `Error al obtener productos de la DB`,
         });
     }
+    //hago destructuring de todo lo que se que puede llegar a existir en el body enviado
     let { title, description, code, price, status = true, stock, category, thumbnail } = req.body;
-    console.log("soy producto",producto)
 
     title && (producto[0]["title"] = title);
     description && (producto[0]["description"] = description);
@@ -119,6 +119,30 @@ export class Product {
 
     res.setHeader("Content-Type", "application/json");
     res.status(201).json({
+      productoModificado,
+    });
+  }
+
+  //elimino un producto filtrado por _id
+  async deleteProduct(req,res){
+    let producto;
+    //tomo el id del producto
+    let idParam = req.params.pid;
+    try {
+      //voy a buscarlo a mi DB por ese id, si no lo encuentro arroja error
+      producto = await productsModelo.find({ _id: { $eq: `${idParam}` } });
+    } catch (error) {
+      res.setHeader("Content-Type", "application/json");
+      console.log(error)
+      return res.status(500).json({
+        mensaje: `Error al obtener productos de la DB`,
+      });
+    }
+
+    let productoModificado = await productsModelo.deleteOne({ _id: { $eq: `${idParam}` } });
+
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json({
       productoModificado,
     });
   }

@@ -128,7 +128,7 @@ routerProductos.put("/:pid",producto.modifyProduct)
 
 
 //ENDPOINT PARA ELIMINAR UN PRODUCTO DADO UN ID !FUNCIONANDO!
-routerProductos.delete("/:pid", (req, res) => {
+/* routerProductos.delete("/:pid", (req, res) => {
   //tomo el id del elemento a actualizar
   let idAModificar = req.params.pid;
 
@@ -168,6 +168,8 @@ routerProductos.delete("/:pid", (req, res) => {
       });
     });
   }
-});
+}); */
+//DB ENDPOINT PARA ELIMINAR UN PRODUCTO DADO UN ID
+routerProductos.delete("/:pid",producto.deleteProduct)
 
 export { routerProductos };
