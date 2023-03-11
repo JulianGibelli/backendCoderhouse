@@ -41,4 +41,10 @@ routervistas.get("/realtimeproducts", (req, res) => {
   res.render("realTimeProducts");
 });
 
+routervistas.get("/chat",(req,res)=>{
+  //LE INDICO QUE RENDERICE LA VISTA REALTIMEPRODUCTS
+  res.setHeader("Content-Type", "text/html");
+  res.render("chat");
+})
+
 export { routervistas };
