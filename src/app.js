@@ -39,7 +39,7 @@ const serverhttp = app.listen(8081, (err) => {
 export const serverSocket = new Server(serverhttp);
 const mensajes = [];
 //establezco una nueva connection
-serverSocket.on("connection", async (socket) => {
+/* serverSocket.on("connection", async (socket) => {
   //cuando se conecta un nuevo cliente lo saludo y emito el listado de productos
   console.log("New client connected", socket.handshake.headers.referer);
 
@@ -81,7 +81,39 @@ serverSocket.on("connection", async (socket) => {
 
     socket.broadcast.emit("nuevoMensaje", mensaje);
   });
-});
+}); */
+
+
+serverSocket.on('connection',(socket)=>{
+    // console.log(socket.handshake);
+    console.log(`Se han conectado, socket id ${socket.id}`)
+
+    socket.emit('hola',{
+        emisor:'Servidor',
+        mensaje:`Hola, desde el server...!!!`,
+        mensajes
+    })
+
+    socket.on('respuestaAlSaludo',(mensaje)=>{
+        console.log(`${mensaje.emisor} dice ${mensaje.mensaje}`);
+
+        socket.broadcast.emit('nuevoUsuario',mensaje.emisor)
+    })
+
+    socket.on('mensaje',(mensaje)=>{
+        console.log(`${mensaje.emisor} dice ${mensaje.mensaje}`);
+
+        // aca deberia de guardar mis mensajes en la bd
+        mensajes.push(mensaje);
+
+        serverSocket.emit('nuevoMensaje',mensaje)
+
+    })
+
+
+}) // fin de server.on connection
+
+
 
 const conectar = async () => {
   try {
