@@ -65,9 +65,7 @@ Swal.fire({
     divMensajes.scrollTop = divMensajes.scrollHeight;
   });
 
-  socket.on("nuevoHeroe", (objeto) => {
-    divMensajes.innerHTML += `<br>Se ha creado el heroe<strong> ${objeto.heroe.nombre}</strong>`;
-  });
+  
 });
 
 /*

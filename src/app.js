@@ -11,6 +11,7 @@ import {
   deleteProductSocket,
   addProductSocket,
 } from "./utils/utils.js";
+import { Message } from "./dao/messagesControlador.js";
 
 const app = express();
 
@@ -37,7 +38,8 @@ const serverhttp = app.listen(8081, (err) => {
 
 //exporto mi servidor websobket
 export const serverSocket = new Server(serverhttp);
-const mensajes = [];
+const mensajes = new Message()
+
 //establezco una nueva connection
 /* serverSocket.on("connection", async (socket) => {
   //cuando se conecta un nuevo cliente lo saludo y emito el listado de productos
@@ -100,11 +102,13 @@ serverSocket.on('connection',(socket)=>{
         socket.broadcast.emit('nuevoUsuario',mensaje.emisor)
     })
 
+    //aca recibo mensajes desde el front y lo alojo en Atlas
     socket.on('mensaje',(mensaje)=>{
         console.log(`${mensaje.emisor} dice ${mensaje.mensaje}`);
 
         // aca deberia de guardar mis mensajes en la bd
-        mensajes.push(mensaje);
+        mensajes.addMessage({user: mensaje.emisor, message:mensaje.mensaje});
+
 
         serverSocket.emit('nuevoMensaje',mensaje)
 
